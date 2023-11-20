@@ -202,27 +202,26 @@ public class CanadaKeno implements Runnable{
         }
     }
     
-	public static void InsertNewData(String Tablename, String drawDate,String drawTime,String drawNumber,String drawCount,String DateCreated, String drawClient, String drawGet) throws IOException, ParseException{
+    public static void InsertNewData(String Tablename, String drawDate,String drawTime,String drawNumber,String drawCount,String DateCreated, String drawClient, String drawGet) throws IOException, ParseException{
 
-		try (Connection connection = Config.getConnection()){
-		    
-	        String insertSQL  = "INSERT INTO " + Tablename + " (draw_date,draw_time,draw_number,draw_count,date_created,client,get_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
-	        pstmt = connection.prepareStatement(insertSQL);
-	        pstmt.setString(1,drawDate);
-	        pstmt.setString(2,drawTime);
-	        pstmt.setString(3,drawNumber);
-	        pstmt.setString(4,drawCount);
-	        pstmt.setString(5,DateCreated);
-	        pstmt.setString(6,drawClient);
-	        pstmt.setString(7,drawGet);
-	        pstmt.executeUpdate();
-	        System.out.println("**** Inserted **** => Time: " + drawTime);
-	        pstmt.close();
-	        connection.close();
-		  
-		} catch (SQLException e) {
-			LOGGER.log(Level.INFO, "Exception occurred", e.getMessage());
-	  }
-   }
-	
+	try (Connection connection = Config.getConnection()){
+	    
+	String insertSQL  = "INSERT INTO " + Tablename + " (draw_date,draw_time,draw_number,draw_count,date_created,client,get_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	pstmt = connection.prepareStatement(insertSQL);
+	pstmt.setString(1,drawDate);
+	pstmt.setString(2,drawTime);
+	pstmt.setString(3,drawNumber);
+	pstmt.setString(4,drawCount);
+	pstmt.setString(5,DateCreated);
+	pstmt.setString(6,drawClient);
+	pstmt.setString(7,drawGet);
+	pstmt.executeUpdate();
+	System.out.println("**** Inserted **** => Time: " + drawTime);
+	pstmt.close();
+	connection.close();
+	  
+	} catch (SQLException e) {
+		LOGGER.log(Level.INFO, "Exception occurred", e.getMessage());
+  }
+ }
 }
