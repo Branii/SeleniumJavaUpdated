@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,11 +43,14 @@ public class CanadaKeno implements Runnable{
     	executor.scheduleAtFixedRate(() -> {
 			
     		DateFormat CanadaTime = new SimpleDateFormat("HH:mm:ss");
-//          DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-//    		LocalDateTime currTime = LocalDateTime.now();
             CanadaTime.setTimeZone(TimeZone.getTimeZone("America/Vancouver"));
             Date zoneTime = new Date();
             String currentTime = CanadaTime.format(zoneTime);
+            
+//            LocalTime time = LocalTime.parse(currentTime, DateTimeFormatter.ofPattern("HH:mm:ss")); convert to 24h
+//            String time24Hour = time.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+//            System.out.println("Time in 24-hour format: " + time24Hour);
+        
            
             try {
                 
@@ -72,15 +76,20 @@ public class CanadaKeno implements Runnable{
         
         if (canadaTime != null) {
         	 String drawcount = timeValueMap.get(currentTime);
+
+        	  String formattedTime = LocalTime.parse(currentTime, DateTimeFormatter.ofPattern("HH:mm:ss"))
+                      .format(DateTimeFormatter.ofPattern("hh:mm:ss"));
+           
+        	 
             try {
                 
                 setupWebDriver(currentTime);
-                System.out.println("Request new data: => [ SystemTime = " + currentTime + " | SiteTime = " + getDrawTime() + " ]");
+                System.out.println("Request new data: => [ SystemTime = " + formattedTime + " | SiteTime = " + getDrawTime() + " ]");
 
                 while (true) {
                     String drawTime = getDrawTime();
 
-                    if (drawTime.trim().equals(currentTime.trim())) {
+                    if (drawTime.trim().equals(formattedTime.trim())) {
                         displayDrawInfo(drawcount);
                         break;
                     } else {
@@ -129,7 +138,7 @@ public class CanadaKeno implements Runnable{
         } catch (org.openqa.selenium.WebDriverException e) {
             if (e.getMessage().contains("Connection reset")) {
             	networkCount++;
-            	 if (networkCount >= 3) {
+            	 if (networkCount >= 5) {
             		 System.out.println("Could not connect to host check your internet!");
                      networkCount = 0;
                      return;
