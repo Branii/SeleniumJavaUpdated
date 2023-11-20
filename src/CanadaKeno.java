@@ -222,6 +222,6 @@ public class CanadaKeno implements Runnable{
 	  
 	} catch (SQLException e) {
 		LOGGER.log(Level.INFO, "Exception occurred", e.getMessage());
-  }
+        }
  }
 }
